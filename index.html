@@ -206,6 +206,26 @@ input,select{font-family:inherit;font-size:14px;outline:none}
 .stab.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:600}
 .fbar input{width:200px}
 
+/* ===== SCHEDULE PICKUP ===== */
+.day-pill{flex:1;border:1.5px solid var(--bdr);border-radius:10px;padding:8px 4px;cursor:pointer;text-align:center;background:#fff;transition:all .15s}
+.day-pill:hover{border-color:var(--navy)}
+.day-pill.sel{border:2px solid var(--navy);background:#EFF6FF}
+.day-pill .dp-day{font-size:11px;color:var(--t2);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.day-pill .dp-date{font-size:18px;font-weight:800;color:var(--blk);margin:2px 0}
+.day-pill.sel .dp-day,.day-pill.sel .dp-date{color:var(--navy)}
+.day-pill.unavail{opacity:.35;cursor:not-allowed}
+.time-slot{border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;cursor:pointer;background:#fff;display:flex;align-items:center;gap:10px;transition:all .15s}
+.time-slot:hover{border-color:var(--navy)}
+.time-slot.sel{border:2px solid var(--navy);background:#EFF6FF}
+.time-slot.unavail{opacity:.35;cursor:not-allowed;background:var(--bg)}
+.pkg-check{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--bdr);border-radius:10px;cursor:pointer;background:#fff;margin-bottom:8px}
+.pkg-check:hover{border-color:var(--navy)}
+.pkg-check.sel{border-color:var(--navy);background:#EFF6FF}
+.pkg-check input[type=checkbox]{width:18px;height:18px;accent-color:var(--navy);flex-shrink:0}
+.pickup-row{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--bdr);font-size:13px}
+.pickup-row:last-child{border-bottom:none}
+.pickup-row:hover{background:var(--bg)}
+
 /* ===== SUPPORT PAGE ===== */
 .faq-item{border-bottom:1px solid var(--bdr);cursor:pointer}
 .faq-item:last-child{border-bottom:none}
@@ -440,6 +460,7 @@ input,select{font-family:inherit;font-size:14px;outline:none}
 <button class="snav" data-s="upgrade">13 Upgrade</button>
 <button class="snav" data-s="batch">14 Batch</button>
 <button class="snav" data-s="support">15 Support</button>
+<button class="snav" data-s="pickup">16 Pickup</button>
 <button class="snav" data-s="admin" style="background:#7C3AED">⚙ Admin</button>
 </div>
 
@@ -698,7 +719,7 @@ input,select{font-family:inherit;font-size:14px;outline:none}
             <div class="qa-card" onclick="go('step1')"><div class="qa-icon" style="background:var(--deep)"><svg><use href="#ic-pkg"/></svg></div><div class="qa-title">Create Shipment</div><div class="qa-sub">Ship a package now</div></div>
             <div class="qa-card" onclick="go('batch')"><div class="qa-icon" style="background:var(--ok)"><svg><use href="#ic-doc"/></svg></div><div class="qa-title">Print Labels</div><div class="qa-sub">Batch print labels</div></div>
             <div class="qa-card" onclick="go('history')"><div class="qa-icon" style="background:var(--deep)"><svg><use href="#ic-truck"/></svg></div><div class="qa-title">Track Package</div><div class="qa-sub">Enter tracking number</div></div>
-            <div class="qa-card"><div class="qa-icon" style="background:var(--ok)"><svg><use href="#ic-cal"/></svg></div><div class="qa-title">Schedule Pickup</div><div class="qa-sub">Request carrier pickup</div></div>
+            <div class="qa-card" onclick="go('pickup')"><div class="qa-icon" style="background:var(--ok)"><svg><use href="#ic-cal"/></svg></div><div class="qa-title">Schedule Pickup</div><div class="qa-sub">Request carrier pickup</div></div>
           </div>
           <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:20px;align-items:start">
             <div style="background:#fff;border:1px solid var(--bdr);border-radius:12px;overflow:hidden">
@@ -1573,6 +1594,437 @@ input,select{font-family:inherit;font-size:14px;outline:none}
       </div>
     </div>
   </div>
+</div>
+
+<!-- ===== SCREEN 16: SCHEDULE PICKUP ===== -->
+<div id="s-pickup" class="screen">
+  <div style="display:flex;width:100%;min-height:100vh">
+    <div class="sidebar">
+      <div class="slogo"><img src="LOGO_AJ.PNG" alt="The Shipping Dude" class="slogo-img"></div>
+      <nav style="padding:12px 10px;flex:1">
+        <button class="nav-item" onclick="go('dashboard')"><svg><use href="#ic-dash"/></svg>Dashboard</button>
+        <button class="nav-item active"><svg><use href="#ic-pkg"/></svg>Ship</button>
+        <button class="nav-item" onclick="go('ratequote')"><svg><use href="#ic-chart"/></svg>Rates</button>
+        <button class="nav-item" onclick="go('wallet')"><svg><use href="#ic-wallet"/></svg>Wallet</button>
+        <button class="nav-item" onclick="go('history')"><svg><use href="#ic-history"/></svg>History</button>
+        <button class="nav-item" onclick="go('settings')"><svg><use href="#ic-settings"/></svg>Settings</button>
+        <button class="nav-item" onclick="go('support')"><svg><use href="#ic-help"/></svg>Support</button>
+      </nav>
+      <div class="swallet"><div class="sl">Balance</div><div class="sa">$247.50</div><a href="#" onclick="go('wallet')">Add funds →</a></div>
+    </div>
+
+    <div class="main-area">
+      <div style="height:60px;background:#fff;border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 28px;justify-content:space-between;flex-shrink:0">
+        <h1 style="font-size:20px;font-weight:700">Schedule a Pickup</h1>
+        <span style="font-size:13px;color:var(--t2)">Carrier picks up from your door — no drop-off needed</span>
+      </div>
+
+      <div class="main-scroll">
+        <div style="display:flex;gap:24px;max-width:1060px;margin:0 auto;align-items:flex-start">
+
+          <!-- LEFT: New Pickup Form -->
+          <div style="flex:1.3;display:flex;flex-direction:column;gap:16px">
+
+            <!-- Step 1: Select labels -->
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+                <div style="width:28px;height:28px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">1</div>
+                <div><div style="font-weight:700;font-size:15px">Select packages for pickup</div><div style="font-size:12px;color:var(--t2)">Choose which labels you want picked up</div></div>
+              </div>
+
+              <div id="pkg-list">
+                <label class="pkg-check sel" id="pkg-9042" onclick="togPkg(this)">
+                  <input type="checkbox" checked onclick="event.stopPropagation()">
+                  <span class="cbadge usps">USPS</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-weight:600;font-size:13px">John Smith — Austin, TX</div>
+                    <div style="font-size:11px;color:var(--t2);font-family:monospace">9400 1118 9922 3756 · Priority Mail</div>
+                  </div>
+                  <span class="badge badge-nv" style="flex-shrink:0">Ready</span>
+                </label>
+                <label class="pkg-check sel" id="pkg-9041" onclick="togPkg(this)">
+                  <input type="checkbox" checked onclick="event.stopPropagation()">
+                  <span class="cbadge ups">UPS</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-weight:600;font-size:13px">Maria Garcia — Chicago, IL</div>
+                    <div style="font-size:11px;color:var(--t2);font-family:monospace">1Z999AA101234567 · UPS Ground</div>
+                  </div>
+                  <span class="badge badge-nv" style="flex-shrink:0">Ready</span>
+                </label>
+                <label class="pkg-check" id="pkg-9040" onclick="togPkg(this)">
+                  <input type="checkbox" onclick="event.stopPropagation()">
+                  <span class="cbadge fedex">FedEx</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-weight:600;font-size:13px">Lisa Wong — Seattle, WA</div>
+                    <div style="font-size:11px;color:var(--t2);font-family:monospace">7748 9999 9090 · FedEx Home</div>
+                  </div>
+                  <span class="badge badge-nv" style="flex-shrink:0">Ready</span>
+                </label>
+              </div>
+
+              <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between">
+                <span style="font-size:13px;color:var(--t2)"><span id="pkg-count">2</span> packages selected</span>
+                <a href="#" onclick="go('history')" style="font-size:12px;color:var(--navy);font-weight:600;text-decoration:none">+ Add from history</a>
+              </div>
+            </div>
+
+            <!-- Step 2: Pickup address & location -->
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+                <div style="width:28px;height:28px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">2</div>
+                <div><div style="font-weight:700;font-size:15px">Pickup address</div><div style="font-size:12px;color:var(--t2)">Where should the carrier collect from?</div></div>
+              </div>
+
+              <div style="background:var(--bg);border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <svg style="width:18px;height:18px;stroke:var(--navy);fill:none;stroke-width:2;flex-shrink:0;color:var(--navy)"><use href="#ic-map"/></svg>
+                  <div>
+                    <div style="font-weight:600;font-size:13px">Zagham Abbas</div>
+                    <div style="font-size:12px;color:var(--t2)">123 Johar Town, Lahore PK 54000</div>
+                  </div>
+                </div>
+                <a href="#" onclick="go('settings')" style="font-size:12px;color:var(--navy);font-weight:600;text-decoration:none">Change</a>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                  <label class="lbl">Package location</label>
+                  <select class="inp">
+                    <option>Front door</option>
+                    <option>Back door</option>
+                    <option>Side entrance</option>
+                    <option>Mailroom / reception</option>
+                    <option>Garage</option>
+                    <option>Other (see instructions)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="lbl">Special instructions <span style="font-weight:400;color:var(--t3)">(optional)</span></label>
+                  <input class="inp" placeholder="e.g. Ring doorbell, gate code #1234...">
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Schedule date & time -->
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+                <div style="width:28px;height:28px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">3</div>
+                <div><div style="font-weight:700;font-size:15px">Choose date &amp; time</div><div style="font-size:12px;color:var(--t2)">Available next 7 days</div></div>
+              </div>
+
+              <!-- Day picker -->
+              <label class="lbl">Pickup date</label>
+              <div style="display:flex;gap:8px;margin-bottom:18px">
+                <div class="day-pill unavail"><div class="dp-day">Thu</div><div class="dp-date">29</div><div style="font-size:10px;color:var(--err)">Closed</div></div>
+                <div class="day-pill sel" onclick="selDay(this)"><div class="dp-day">Fri</div><div class="dp-date">30</div><div style="font-size:10px;color:var(--ok)">Free</div></div>
+                <div class="day-pill" onclick="selDay(this)"><div class="dp-day">Sat</div><div class="dp-date">31</div><div style="font-size:10px;color:var(--ok)">Free</div></div>
+                <div class="day-pill unavail"><div class="dp-day">Sun</div><div class="dp-date">1</div><div style="font-size:10px;color:var(--t3)">Closed</div></div>
+                <div class="day-pill" onclick="selDay(this)"><div class="dp-day">Mon</div><div class="dp-date">2</div><div style="font-size:10px;color:var(--ok)">Free</div></div>
+                <div class="day-pill" onclick="selDay(this)"><div class="dp-day">Tue</div><div class="dp-date">3</div><div style="font-size:10px;color:var(--ok)">Free</div></div>
+                <div class="day-pill" onclick="selDay(this)"><div class="dp-day">Wed</div><div class="dp-date">4</div><div style="font-size:10px;color:var(--ok)">Free</div></div>
+              </div>
+
+              <!-- Time slots -->
+              <label class="lbl">Time window</label>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px">
+                <div class="time-slot sel" onclick="selTime(this,'8:00 AM – 12:00 PM')">
+                  <svg style="width:18px;height:18px;stroke:var(--navy);fill:none;stroke-width:2;flex-shrink:0;color:var(--navy)" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <div style="flex:1">
+                    <div style="font-weight:700;font-size:14px;color:var(--navy)">Morning · 8:00 AM – 12:00 PM</div>
+                    <div style="font-size:12px;color:var(--t2)">Available for USPS &amp; UPS</div>
+                  </div>
+                  <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--ok)">Free</div><div style="font-size:11px;color:var(--t2)">USPS</div></div>
+                </div>
+                <div class="time-slot" onclick="selTime(this,'12:00 PM – 5:00 PM')">
+                  <svg style="width:18px;height:18px;stroke:var(--t2);fill:none;stroke-width:2;flex-shrink:0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <div style="flex:1">
+                    <div style="font-weight:700;font-size:14px">Afternoon · 12:00 PM – 5:00 PM</div>
+                    <div style="font-size:12px;color:var(--t2)">Available for all carriers</div>
+                  </div>
+                  <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--warn)">$4.50</div><div style="font-size:11px;color:var(--t2)">UPS fee</div></div>
+                </div>
+                <div class="time-slot" onclick="selTime(this,'5:00 PM – 8:00 PM')">
+                  <svg style="width:18px;height:18px;stroke:var(--t2);fill:none;stroke-width:2;flex-shrink:0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <div style="flex:1">
+                    <div style="font-weight:700;font-size:14px">Evening · 5:00 PM – 8:00 PM</div>
+                    <div style="font-size:12px;color:var(--t2)">USPS only · not all areas</div>
+                  </div>
+                  <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--ok)">Free</div><div style="font-size:11px;color:var(--t2)">USPS</div></div>
+                </div>
+              </div>
+
+              <!-- Carrier fee summary -->
+              <div style="background:var(--bg);border-radius:10px;padding:14px 16px;margin-bottom:4px">
+                <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--t2);margin-bottom:10px">Carrier pickup fees</div>
+                <div style="display:flex;flex-direction:column;gap:7px;font-size:13px">
+                  <div style="display:flex;justify-content:space-between;align-items:center"><div style="display:flex;align-items:center;gap:8px"><span class="cbadge usps">USPS</span> Priority Mail</div><span style="font-weight:700;color:var(--ok)">Free</span></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center"><div style="display:flex;align-items:center;gap:8px"><span class="cbadge ups">UPS</span> UPS Ground</div><span style="font-weight:700;color:var(--warn)">$4.50</span></div>
+                </div>
+                <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bdr);display:flex;justify-content:space-between;font-size:14px"><span style="font-weight:700">Total pickup fees</span><span style="font-weight:800;font-size:16px;color:var(--warn)">$4.50</span></div>
+              </div>
+            </div>
+
+            <!-- Confirm button -->
+            <button class="btn bp" style="width:100%;height:52px;font-size:15px;justify-content:center;gap:10px" onclick="openPickupConfirmed()">
+              <svg style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Schedule pickup — Fri May 30, 8:00 AM – 12:00 PM
+            </button>
+
+            <!-- Info box -->
+            <div class="tip-box" style="display:flex;gap:8px;align-items:flex-start">
+              <svg style="width:15px;height:15px;stroke:#92400E;fill:none;stroke-width:2;flex-shrink:0;margin-top:1px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>USPS pickups must be scheduled <strong>before 3:00 AM</strong> local time for same-day service. UPS and FedEx require <strong>same-day requests before 12:00 PM</strong>.</span>
+            </div>
+
+          </div>
+
+          <!-- RIGHT: My Pickups -->
+          <div style="flex:1;display:flex;flex-direction:column;gap:16px">
+
+            <!-- Upcoming pickups -->
+            <div style="background:#fff;border:1px solid var(--bdr);border-radius:12px;overflow:hidden">
+              <div style="padding:16px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between">
+                <div style="font-weight:700;font-size:15px">My pickups</div>
+                <span class="badge badge-nv">2 upcoming</span>
+              </div>
+
+              <!-- Pickup row 1: Scheduled -->
+              <div class="pickup-row">
+                <div style="width:38px;height:38px;background:#EFF6FF;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:17px;height:17px;stroke:var(--navy);fill:none;stroke-width:2;color:var(--navy)"><use href="#ic-cal"/></svg></div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:600;font-size:13px">Fri May 30 · 8AM–12PM</div>
+                  <div style="font-size:11px;color:var(--t2);margin-top:2px"><span class="cbadge usps" style="font-size:10px;padding:1px 6px">USPS</span> &nbsp;2 packages · Confirmation #US-4829</div>
+                </div>
+                <span class="badge badge-nv" style="flex-shrink:0">Scheduled</span>
+              </div>
+              <div style="padding:0 18px 12px;display:flex;gap:6px">
+                <button class="abtn abtn-view" onclick="openPickupDetails('US-4829','USPS','Fri May 30','8:00 AM – 12:00 PM','2','123 Johar Town, Lahore','Scheduled','Priority Mail 2-Day, Ground Advantage')">View details</button>
+                <button class="abtn abtn-warn" onclick="openReschedule('US-4829','Fri May 30','8:00 AM – 12:00 PM')">Reschedule</button>
+                <button class="abtn abtn-err" onclick="openCancelPickup('US-4829','Fri May 30')">Cancel</button>
+              </div>
+
+              <!-- Pickup row 2: Scheduled -->
+              <div class="pickup-row" style="border-top:1px solid var(--bdr)">
+                <div style="width:38px;height:38px;background:#EFF6FF;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:17px;height:17px;stroke:var(--navy);fill:none;stroke-width:2;color:var(--navy)"><use href="#ic-cal"/></svg></div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:600;font-size:13px">Mon Jun 2 · 12PM–5PM</div>
+                  <div style="font-size:11px;color:var(--t2);margin-top:2px"><span class="cbadge ups" style="font-size:10px;padding:1px 6px">UPS</span> &nbsp;1 package · Confirmation #UPS-7731</div>
+                </div>
+                <span class="badge badge-nv" style="flex-shrink:0">Scheduled</span>
+              </div>
+              <div style="padding:0 18px 12px;display:flex;gap:6px">
+                <button class="abtn abtn-view" onclick="openPickupDetails('UPS-7731','UPS','Mon Jun 2','12:00 PM – 5:00 PM','1','123 Johar Town, Lahore','Scheduled','UPS Ground')">View details</button>
+                <button class="abtn abtn-warn" onclick="openReschedule('UPS-7731','Mon Jun 2','12:00 PM – 5:00 PM')">Reschedule</button>
+                <button class="abtn abtn-err" onclick="openCancelPickup('UPS-7731','Mon Jun 2')">Cancel</button>
+              </div>
+
+              <!-- Pickup row 3: Completed -->
+              <div class="pickup-row" style="border-top:1px solid var(--bdr);background:#FAFAFA">
+                <div style="width:38px;height:38px;background:#DCFCE7;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:17px;height:17px;stroke:var(--ok);fill:none;stroke-width:2;color:var(--ok)"><use href="#ic-check"/></svg></div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:600;font-size:13px">Wed May 28 · 8AM–12PM</div>
+                  <div style="font-size:11px;color:var(--t2);margin-top:2px"><span class="cbadge usps" style="font-size:10px;padding:1px 6px">USPS</span> &nbsp;3 packages · Collected at 9:42 AM</div>
+                </div>
+                <span class="badge badge-ok" style="flex-shrink:0">Completed</span>
+              </div>
+              <div style="padding:0 18px 12px;display:flex;gap:6px">
+                <button class="abtn abtn-view" onclick="openPickupDetails('US-4801','USPS','Wed May 28','8:00 AM – 12:00 PM','3','123 Johar Town, Lahore','Completed','Priority Mail 2-Day ×3')">View details</button>
+              </div>
+
+              <!-- Pickup row 4: Cancelled -->
+              <div class="pickup-row" style="border-top:1px solid var(--bdr);background:#FFF5F5">
+                <div style="width:38px;height:38px;background:#FEE2E2;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:17px;height:17px;stroke:var(--err);fill:none;stroke-width:2;color:var(--err)" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:600;font-size:13px">Mon May 26 · 12PM–5PM</div>
+                  <div style="font-size:11px;color:var(--t2);margin-top:2px"><span class="cbadge fedex" style="font-size:10px;padding:1px 6px">FedEx</span> &nbsp;1 package · Cancelled by user</div>
+                </div>
+                <span class="badge badge-er" style="flex-shrink:0">Cancelled</span>
+              </div>
+              <div style="padding:0 18px 12px;display:flex;gap:6px">
+                <button class="abtn abtn-view" onclick="openPickupDetails('FX-3301','FedEx','Mon May 26','12:00 PM – 5:00 PM','1','123 Johar Town, Lahore','Cancelled','FedEx Home Delivery')">View details</button>
+              </div>
+
+            </div>
+
+            <!-- Carrier pickup rules card -->
+            <div class="card" style="padding:16px 18px">
+              <div style="font-weight:700;font-size:14px;margin-bottom:12px">Carrier pickup rules</div>
+              <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
+                <div style="display:flex;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--bdr)">
+                  <span class="cbadge usps" style="flex-shrink:0;align-self:flex-start">USPS</span>
+                  <div style="color:var(--t2)">Free pickup. Request before <strong style="color:var(--blk)">3:00 AM</strong> for same-day. Available Mon–Sat.</div>
+                </div>
+                <div style="display:flex;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--bdr)">
+                  <span class="cbadge ups" style="flex-shrink:0;align-self:flex-start">UPS</span>
+                  <div style="color:var(--t2)"><strong style="color:var(--blk)">$4.50 fee.</strong> Request before <strong style="color:var(--blk)">12:00 PM</strong> for same-day. Schedule up to 7 days ahead.</div>
+                </div>
+                <div style="display:flex;gap:10px">
+                  <span class="cbadge fedex" style="flex-shrink:0;align-self:flex-start">FedEx</span>
+                  <div style="color:var(--t2)"><strong style="color:var(--blk)">$4.00 fee.</strong> Request before <strong style="color:var(--blk)">12:00 PM</strong> for same-day. Not available in all areas.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: PICKUP CONFIRMED ===== -->
+  <div id="modal-pickup-confirmed" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#fff;border-radius:16px;width:460px;max-width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)">
+      <div style="background:var(--ok);padding:28px 24px;text-align:center">
+        <div style="width:60px;height:60px;background:rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px"><svg style="width:28px;height:28px;stroke:#fff;fill:none;stroke-width:3"><use href="#ic-check"/></svg></div>
+        <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:4px">Pickup scheduled!</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.8)">The carrier will collect your packages on time</div>
+      </div>
+      <div style="padding:22px 24px;display:flex;flex-direction:column;gap:12px">
+        <div style="background:var(--bg);border-radius:10px;padding:14px 16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+            <div><div style="color:var(--t2);font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:3px">Date</div><div style="font-weight:700">Fri May 30, 2026</div></div>
+            <div><div style="color:var(--t2);font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:3px">Time window</div><div style="font-weight:700">8:00 AM – 12:00 PM</div></div>
+            <div><div style="color:var(--t2);font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:3px">Carriers</div><div style="display:flex;gap:4px;margin-top:2px"><span class="cbadge usps" style="font-size:10px">USPS</span><span class="cbadge ups" style="font-size:10px">UPS</span></div></div>
+            <div><div style="color:var(--t2);font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:3px">Packages</div><div style="font-weight:700">2 labels</div></div>
+          </div>
+        </div>
+        <div style="background:#DCFCE7;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:13px;color:#166534">Confirmation number</div>
+          <div style="display:flex;align-items:center;gap:8px"><code style="font-weight:800;font-size:14px;color:var(--ok)">#US-4829</code><button style="height:26px;padding:0 8px;background:#fff;border:1px solid #BBF7D0;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;color:#166534">Copy</button></div>
+        </div>
+        <div style="background:#FFF9E6;border:1px solid #FDE68A;border-radius:8px;padding:10px 14px;font-size:12px;color:#92400E;display:flex;gap:8px;align-items:flex-start">
+          <svg style="width:14px;height:14px;stroke:#B45309;fill:none;stroke-width:2;flex-shrink:0;margin-top:1px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Make sure your packages are <strong>ready and labelled</strong> before the pickup window. The carrier won't wait.
+        </div>
+      </div>
+      <div style="padding:14px 24px;background:#F0FDF4;border-top:1px solid #BBF7D0;display:flex;gap:8px;justify-content:flex-end">
+        <button onclick="closePickupModals()" class="btn bg bsm">Close</button>
+        <button class="btn bg bsm" style="color:var(--navy)">
+          <svg style="width:13px;height:13px;stroke:var(--navy);fill:none;stroke-width:2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Add to calendar
+        </button>
+        <button onclick="closePickupModals()" class="btn bs bsm">View my pickups</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: PICKUP DETAILS ===== -->
+  <div id="modal-pickup-details" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#fff;border-radius:16px;width:480px;max-width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)">
+      <div style="background:var(--deep);padding:18px 24px;display:flex;align-items:center;gap:12px">
+        <svg style="width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <div style="flex:1"><div style="font-size:16px;font-weight:700;color:#fff">Pickup Details</div><div id="pd-id" style="font-size:12px;color:rgba(255,255,255,.5);margin-top:2px;font-family:monospace"></div></div>
+        <div id="pd-status-badge"></div>
+        <button onclick="closePickupModals()" style="background:rgba(255,255,255,.1);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center">×</button>
+      </div>
+      <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="background:var(--bg);border-radius:8px;padding:12px 14px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--t2);margin-bottom:4px">Date</div><div id="pd-date" style="font-weight:700;font-size:14px"></div></div>
+          <div style="background:var(--bg);border-radius:8px;padding:12px 14px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--t2);margin-bottom:4px">Time window</div><div id="pd-time" style="font-weight:700;font-size:14px"></div></div>
+          <div style="background:var(--bg);border-radius:8px;padding:12px 14px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--t2);margin-bottom:4px">Carrier</div><div id="pd-carrier-badge"></div></div>
+          <div style="background:var(--bg);border-radius:8px;padding:12px 14px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--t2);margin-bottom:4px">Packages</div><div id="pd-pkgs" style="font-weight:700;font-size:14px"></div></div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:12px 14px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--t2);margin-bottom:4px">Pickup address</div>
+          <div id="pd-address" style="font-size:13px;font-weight:500"></div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:12px 14px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--t2);margin-bottom:4px">Labels included</div>
+          <div id="pd-labels" style="font-size:13px;color:var(--t2)"></div>
+        </div>
+        <!-- Pickup timeline -->
+        <div>
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--t2);margin-bottom:10px">Pickup status</div>
+          <div style="display:flex;align-items:center;gap:0">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--t2)"><div style="width:22px;height:22px;border-radius:50%;background:var(--ok);display:flex;align-items:center;justify-content:center"><svg style="width:11px;height:11px;stroke:#fff;fill:none;stroke-width:3"><use href="#ic-check"/></svg></div><span>Requested</span></div>
+            <div id="pd-line1" style="flex:1;height:2px;background:var(--ok)"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--t2)"><div id="pd-step2" style="width:22px;height:22px;border-radius:50%;background:var(--ok);display:flex;align-items:center;justify-content:center"><svg style="width:11px;height:11px;stroke:#fff;fill:none;stroke-width:3"><use href="#ic-check"/></svg></div><span>Confirmed</span></div>
+            <div id="pd-line2" style="flex:1;height:2px;background:var(--bdr)"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--t2)"><div id="pd-step3" style="width:22px;height:22px;border-radius:50%;background:var(--bdr)"></div><span>En route</span></div>
+            <div id="pd-line3" style="flex:1;height:2px;background:var(--bdr)"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--t2)"><div id="pd-step4" style="width:22px;height:22px;border-radius:50%;background:var(--bdr)"></div><span>Collected</span></div>
+          </div>
+        </div>
+      </div>
+      <div id="pd-footer" style="padding:14px 24px;background:#FAFAFA;border-top:1px solid var(--bdr);display:flex;gap:8px;justify-content:flex-end">
+        <button onclick="closePickupModals()" class="btn bg bsm">Close</button>
+        <button id="pd-reschedule-btn" onclick="closePickupModals();openReschedule('','',' ')" class="btn bg bsm" style="color:var(--warn)">Reschedule</button>
+        <button id="pd-cancel-btn" onclick="closePickupModals();openCancelPickup('','')" class="btn bsm" style="color:var(--err);border:1px solid var(--err);background:#fff">Cancel pickup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: RESCHEDULE ===== -->
+  <div id="modal-reschedule" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#fff;border-radius:16px;width:440px;max-width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)">
+      <div style="background:var(--warn);padding:18px 24px;display:flex;align-items:center;gap:12px">
+        <svg style="width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <div><div style="font-size:16px;font-weight:700;color:#fff">Reschedule Pickup</div><div id="rs-subheader" style="font-size:12px;color:rgba(255,255,255,.75);margin-top:2px"></div></div>
+        <button onclick="closePickupModals()" style="margin-left:auto;background:rgba(255,255,255,.2);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center">×</button>
+      </div>
+      <div style="padding:20px 24px;display:flex;flex-direction:column;gap:16px">
+        <div style="background:#FEF3C7;border-radius:8px;padding:11px 14px;font-size:13px;color:#92400E">
+          Current pickup: <strong id="rs-current"></strong>
+        </div>
+        <div>
+          <label class="lbl">New pickup date</label>
+          <div style="display:flex;gap:6px">
+            <div class="day-pill" onclick="selRsDay(this)" style="flex:1"><div class="dp-day">Fri</div><div class="dp-date">30</div></div>
+            <div class="day-pill sel" onclick="selRsDay(this)" style="flex:1"><div class="dp-day">Sat</div><div class="dp-date">31</div></div>
+            <div class="day-pill" onclick="selRsDay(this)" style="flex:1"><div class="dp-day">Mon</div><div class="dp-date">2</div></div>
+            <div class="day-pill" onclick="selRsDay(this)" style="flex:1"><div class="dp-day">Tue</div><div class="dp-date">3</div></div>
+            <div class="day-pill" onclick="selRsDay(this)" style="flex:1"><div class="dp-day">Wed</div><div class="dp-date">4</div></div>
+          </div>
+        </div>
+        <div>
+          <label class="lbl">New time window</label>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="time-slot sel" onclick="selRsTime(this)"><svg style="width:16px;height:16px;stroke:var(--navy);fill:none;stroke-width:2;color:var(--navy)" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div style="flex:1"><div style="font-weight:600;font-size:13px;color:var(--navy)">Morning · 8:00 AM – 12:00 PM</div></div><span style="font-size:12px;font-weight:700;color:var(--ok)">Free</span></div>
+            <div class="time-slot" onclick="selRsTime(this)"><svg style="width:16px;height:16px;stroke:var(--t2);fill:none;stroke-width:2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div style="flex:1"><div style="font-weight:600;font-size:13px">Afternoon · 12:00 PM – 5:00 PM</div></div><span style="font-size:12px;font-weight:700;color:var(--warn)">$4.50</span></div>
+            <div class="time-slot" onclick="selRsTime(this)"><svg style="width:16px;height:16px;stroke:var(--t2);fill:none;stroke-width:2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div style="flex:1"><div style="font-weight:600;font-size:13px">Evening · 5:00 PM – 8:00 PM</div></div><span style="font-size:12px;font-weight:700;color:var(--ok)">Free</span></div>
+          </div>
+        </div>
+        <div><label class="lbl">Reason for rescheduling <span style="font-weight:400;color:var(--t3)">(optional)</span></label>
+          <select class="inp"><option>Change of plans</option><option>Packages not ready</option><option>No one available to hand over</option><option>Other</option></select>
+        </div>
+      </div>
+      <div style="padding:14px 24px;background:#FFFBEB;border-top:1px solid #FDE68A;display:flex;gap:8px;justify-content:flex-end">
+        <button onclick="closePickupModals()" class="btn bg bsm">Cancel</button>
+        <button onclick="closePickupModals();alert('Pickup rescheduled successfully!')" style="height:36px;padding:0 20px;background:var(--warn);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Confirm Reschedule</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: CANCEL PICKUP ===== -->
+  <div id="modal-cancel-pickup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:20px">
+    <div style="background:#fff;border-radius:16px;width:400px;max-width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)">
+      <div style="background:var(--err);padding:18px 24px;display:flex;align-items:center;gap:12px">
+        <svg style="width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <div><div style="font-size:16px;font-weight:700;color:#fff">Cancel Pickup</div><div id="cp-subheader" style="font-size:12px;color:rgba(255,255,255,.65);margin-top:2px"></div></div>
+        <button onclick="closePickupModals()" style="margin-left:auto;background:rgba(255,255,255,.2);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center">×</button>
+      </div>
+      <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+        <div style="background:#FEF2F2;border-radius:8px;padding:11px 14px;font-size:13px;color:#991B1B">
+          Cancelling will remove the pickup request from the carrier. Your labels remain valid — you can reschedule or drop them off instead.
+        </div>
+        <div><label class="lbl">Reason for cancellation</label>
+          <select class="inp">
+            <option>No longer need pickup</option>
+            <option>Will drop off instead</option>
+            <option>Packages not ready</option>
+            <option>Scheduled wrong date</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--err)"> Send cancellation confirmation email</label>
+      </div>
+      <div style="padding:14px 24px;background:#FFF5F5;border-top:1px solid #FCA5A5;display:flex;gap:8px;justify-content:flex-end">
+        <button onclick="closePickupModals()" class="btn bg bsm">Keep pickup</button>
+        <button onclick="closePickupModals();alert('Pickup cancelled.')" style="height:36px;padding:0 20px;background:var(--err);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Cancel pickup</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ===== SCREEN: SUPPORT ===== -->
@@ -2922,7 +3374,7 @@ input,select{font-family:inherit;font-size:14px;outline:none}
 
 <script>
 (function(){
-var S={landing:'s-landing',signup:'s-signup',login:'s-login',dashboard:'s-dashboard',step1:'s-step1',step2:'s-step2',rates:'s-rates',confirm:'s-confirm',label:'s-label',wallet:'s-wallet',ratequote:'s-ratequote',settings:'s-settings',history:'s-history',upgrade:'s-upgrade',batch:'s-batch',support:'s-support',admin:'s-admin',adminusers:'s-admin-users',adminlabels:'s-admin-labels',adminrevenue:'s-admin-revenue',adminrates:'s-admin-rates',adminsupport:'s-admin-support'};
+var S={landing:'s-landing',signup:'s-signup',login:'s-login',dashboard:'s-dashboard',step1:'s-step1',step2:'s-step2',rates:'s-rates',confirm:'s-confirm',label:'s-label',wallet:'s-wallet',ratequote:'s-ratequote',settings:'s-settings',history:'s-history',upgrade:'s-upgrade',batch:'s-batch',support:'s-support',pickup:'s-pickup',admin:'s-admin',adminusers:'s-admin-users',adminlabels:'s-admin-labels',adminrevenue:'s-admin-revenue',adminrates:'s-admin-rates',adminsupport:'s-admin-support'};
 
 window.go=function(name){
   Object.keys(S).forEach(function(k){var el=document.getElementById(S[k]);if(el)el.classList.remove('active');});
@@ -3284,6 +3736,93 @@ window.swTab=function(btn,tab){
   document.querySelectorAll('.stab').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');
   ['tab-prof','tab-addr','tab-lbld','tab-pass'].forEach(function(t){var el=document.getElementById(t);if(el)el.style.display='none';});
   var el=document.getElementById('tab-'+tab);if(el)el.style.display='block';
+};
+
+// ---- Schedule Pickup ----
+window.closePickupModals=function(){
+  ['modal-pickup-confirmed','modal-pickup-details','modal-reschedule','modal-cancel-pickup'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.style.display='none';
+  });
+};
+['modal-pickup-confirmed','modal-pickup-details','modal-reschedule','modal-cancel-pickup'].forEach(function(id){
+  var el=document.getElementById(id);
+  if(el)el.addEventListener('click',function(e){if(e.target===el)closePickupModals();});
+});
+
+window.togPkg=function(el){
+  el.classList.toggle('sel');
+  var cb=el.querySelector('input[type=checkbox]');
+  if(cb)cb.checked=!cb.checked;
+  var count=document.querySelectorAll('.pkg-check.sel').length;
+  var c=document.getElementById('pkg-count');if(c)c.textContent=count;
+};
+
+window.selDay=function(el){
+  el.closest('.card').querySelectorAll('.day-pill:not(.unavail)').forEach(function(d){d.classList.remove('sel');});
+  el.classList.add('sel');
+};
+window.selRsDay=function(el){
+  el.closest('div').querySelectorAll('.day-pill').forEach(function(d){d.classList.remove('sel');});
+  el.classList.add('sel');
+};
+window.selTime=function(el,label){
+  el.closest('.card').querySelectorAll('.time-slot').forEach(function(t){
+    t.classList.remove('sel');
+    t.querySelector('svg').style.stroke='var(--t2)';
+    var title=t.querySelector('div div');if(title)title.style.color='var(--blk)';
+  });
+  el.classList.add('sel');
+  el.querySelector('svg').style.stroke='var(--navy)';
+  var title=el.querySelector('div div');if(title)title.style.color='var(--navy)';
+};
+window.selRsTime=function(el){
+  el.closest('div').querySelectorAll('.time-slot').forEach(function(t){t.classList.remove('sel');});
+  el.classList.add('sel');
+};
+
+window.openPickupConfirmed=function(){
+  var m=document.getElementById('modal-pickup-confirmed');if(m)m.style.display='flex';
+};
+
+var pickupBadgeMap={USPS:'<span class="cbadge usps">USPS</span>',UPS:'<span class="cbadge ups">UPS</span>',FedEx:'<span class="cbadge fedex">FedEx</span>'};
+var pickupStatusMap={Scheduled:'<span class="badge badge-nv">Scheduled</span>',Completed:'<span class="badge badge-ok">Completed</span>',Cancelled:'<span class="badge badge-er">Cancelled</span>'};
+
+window.openPickupDetails=function(id,carrier,date,time,pkgs,address,status,labels){
+  var m=document.getElementById('modal-pickup-details');if(!m)return;
+  document.getElementById('pd-id').textContent='#'+id;
+  document.getElementById('pd-date').textContent=date;
+  document.getElementById('pd-time').textContent=time;
+  document.getElementById('pd-carrier-badge').innerHTML=pickupBadgeMap[carrier]||carrier;
+  document.getElementById('pd-pkgs').textContent=pkgs+' package'+(pkgs>1?'s':'');
+  document.getElementById('pd-address').textContent=address;
+  document.getElementById('pd-labels').textContent=labels;
+  document.getElementById('pd-status-badge').innerHTML=pickupStatusMap[status]||status;
+  var showActions=status==='Scheduled';
+  var rsBtn=document.getElementById('pd-reschedule-btn');
+  var cxBtn=document.getElementById('pd-cancel-btn');
+  if(rsBtn)rsBtn.style.display=showActions?'inline-flex':'none';
+  if(cxBtn)cxBtn.style.display=showActions?'inline-flex':'none';
+  if(status==='Completed'){
+    var s3=document.getElementById('pd-step3');var l2=document.getElementById('pd-line2');
+    var s4=document.getElementById('pd-step4');var l3=document.getElementById('pd-line3');
+    if(s3){s3.style.background='var(--ok)';s3.innerHTML='<svg style="width:11px;height:11px;stroke:#fff;fill:none;stroke-width:3"><use href="#ic-check"/></svg>';}
+    if(l2)l2.style.background='var(--ok)';
+    if(s4){s4.style.background='var(--ok)';s4.innerHTML='<svg style="width:11px;height:11px;stroke:#fff;fill:none;stroke-width:3"><use href="#ic-check"/></svg>';}
+    if(l3)l3.style.background='var(--ok)';
+  }
+  m.style.display='flex';
+};
+
+window.openReschedule=function(id,date,time){
+  var m=document.getElementById('modal-reschedule');if(!m)return;
+  document.getElementById('rs-current').textContent=date+' · '+time;
+  m.style.display='flex';
+};
+
+window.openCancelPickup=function(id,date){
+  var m=document.getElementById('modal-cancel-pickup');if(!m)return;
+  document.getElementById('cp-subheader').textContent='#'+id+' · '+date;
+  m.style.display='flex';
 };
 
 // ---- Support page ----
